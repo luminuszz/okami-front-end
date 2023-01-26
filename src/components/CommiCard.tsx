@@ -1,12 +1,13 @@
 import { FC, memo } from "react";
 import { Commic } from "@/domain/entities/commic";
-import { Button, Flex, Text, VStack, Image } from "@chakra-ui/react";
+import { Button, Text, VStack, Image } from "@chakra-ui/react";
 
 type Props = {
   commic: Commic;
+  onClickMarkReadButton: () => void;
 };
 
-const CommiCard: FC<Props> = ({ commic }) => {
+const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
   return (
     <VStack spacing="3" justifyContent="center">
       <Image
@@ -18,6 +19,7 @@ const CommiCard: FC<Props> = ({ commic }) => {
       />
 
       <Text
+        noOfLines={1}
         textAlign="center"
         fontFamily="body"
         fontSize="lg"
@@ -26,25 +28,40 @@ const CommiCard: FC<Props> = ({ commic }) => {
         {commic.name}
       </Text>
 
-      <Button
-        disabled={!commic.hasNewchapter}
-        colorScheme="yellow"
-        variant="outline"
+      <Text
+        noOfLines={1}
+        textAlign="center"
+        fontFamily="body"
+        fontSize="lg"
+        color="green.300"
       >
-        Capitulo novo diponível !
-      </Button>
+        {`Ultimo capitulo lido: ${commic.cap}`}
+      </Text>
 
-      <Button
-        disabled={!commic.hasNewchapter}
-        colorScheme="teal"
-        variant="solid"
-      >
-        marcar como lido
-      </Button>
+      {commic.hasNewchapter && (
+        <>
+          <Button
+            isDisabled={!commic.hasNewchapter}
+            colorScheme="yellow"
+            variant="link"
+            as="a"
+            href={commic.url}
+            target="_blank"
+          >
+            Capitulo novo disponível !
+          </Button>
+
+          <Button
+            colorScheme="teal"
+            variant="solid"
+            onClick={onClickMarkReadButton}
+          >
+            marcar como lido
+          </Button>
+        </>
+      )}
     </VStack>
   );
 };
 
-export default memo(CommiCard, (prevProps, nextProps) =>
-  Object.is(prevProps.commic, nextProps.commic)
-);
+export default CommiCard;

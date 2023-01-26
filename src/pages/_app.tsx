@@ -4,6 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "@/theme";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Roboto } from "@next/font/google";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 // Query client
 const queryClient = new QueryClient();
@@ -18,14 +19,15 @@ const roboto = Roboto({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider resetCSS theme={theme}>
       <QueryClientProvider client={queryClient}>
         <main
-          style={{ width: "100vw", height: "100vh" }}
+          style={{ width: "100%", height: "100%" }}
           className={roboto.className}
         >
           <Component {...pageProps} />
         </main>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </ChakraProvider>
   );

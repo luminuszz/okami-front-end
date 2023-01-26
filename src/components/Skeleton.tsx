@@ -9,6 +9,7 @@ const Skeleton = ({ quantity = 1 }: Props) => {
     <>
       {Array.from({ length: quantity }, (_, index) => (
         <ChakraSkeleton
+          borderRadius="10px"
           key={index}
           width="200px"
           height="200px"
