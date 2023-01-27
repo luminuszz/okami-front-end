@@ -1,6 +1,7 @@
 import { FC, memo } from "react";
 import { Commic } from "@/domain/entities/commic";
 import { Button, Text, VStack, Image } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 type Props = {
   commic: Commic;
@@ -8,9 +9,13 @@ type Props = {
 };
 
 const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
+  const router = useRouter();
+
   return (
     <VStack spacing="3" justifyContent="center">
       <Image
+        cursor="pointer"
+        onClick={() => router.push(`/commics/${commic.id}`)}
         fallbackSrc="/placeholder.jpg"
         style={{ borderRadius: "10px" }}
         alt="commic -image"

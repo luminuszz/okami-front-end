@@ -56,7 +56,7 @@ const HomePage: NextPage = () => {
     setModal({ isOpen: true, commic });
 
   const commics = filter
-    ? data?.filter((item) => item?.name.includes(filter))
+    ? data?.filter((item) => item?.name.toLocaleLowerCase().includes(filter))
     : data;
 
   return (
