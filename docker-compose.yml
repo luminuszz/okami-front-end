@@ -2,19 +2,18 @@ version: "3.7"
 services:
   react_app:
     environment:
-      - ENV=${ENV}
       - PORT=${PORT}
+      - DOCKER_FILE_ENV=${DOCKER_FILE_ENV}
     container_name: luminuszz-wep-app
     restart: always
     build:
       context: .
-      dockerfile: "dockerfile"
+      dockerfile: "./docker/${DOCKER_FILE_ENV}/dockerfile"
     ports:
       - "${PORT}:${PORT}"
     volumes:
       - ./:/app
       - /app/node_modules
-      - /app/.next
 
 
 
