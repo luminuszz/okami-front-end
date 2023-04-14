@@ -1,10 +1,10 @@
-import { FC, memo } from "react";
-import { Commic } from "@/domain/entities/commic";
-import { Button, Text, VStack, Image } from "@chakra-ui/react";
+import { Comic } from "@/domain/entities/commic";
+import { Button, Image, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { FC } from "react";
 
 type Props = {
-  commic: Commic;
+  commic: Comic;
   onClickMarkReadButton: () => void;
 };
 

@@ -1,4 +1,4 @@
-export interface Commic {
+export interface Comic {
   tatus: string;
   url: string;
   createdAt: Date;

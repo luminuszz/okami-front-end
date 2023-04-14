@@ -1,42 +1,31 @@
-import { NextPage } from "next";
-import Layout from "@/components/layout";
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  Input,
-  SimpleGrid,
-  Spinner,
-} from "@chakra-ui/react";
 import CommiCard from "@/components/CommiCard";
-import { Commic } from "@/domain/entities/commic";
-import useGetCommics from "@/services/api/queries/useGetCommics";
+import Layout from "@/components/layout";
 import Skeleton from "@/components/Skeleton";
-import { useState } from "react";
 import UpdateCommicModal from "@/components/UpdateCommicModal";
+import { Comic } from "@/domain/entities/commic";
+import useGetCommics, {
+  getCommics,
+  getCommicsKey,
+} from "@/services/api/queries/useGetCommics";
 
-const Loading = ({ show }: { show: boolean }) => {
-  return (
-    <Flex mb="10" p="10" justifyContent="flex-end" alignItems="flex-end">
-      {show && <Spinner size="md" />}
-    </Flex>
-  );
-};
-
+import { Container, Flex, HStack, Input, SimpleGrid } from "@chakra-ui/react";
+import { GetServerSideProps, NextPage } from "next";
+import { useState } from "react";
+import { dehydrate } from "react-query";
+import { queryClient } from "../_app";
 type SearchBarProps = {
   isRefetching: boolean;
   filter: string;
   setFilter: (value: string) => void;
 };
 
-const SearchBar = ({ setFilter, filter, isRefetching }: SearchBarProps) => {
+const SearchBar = ({ setFilter, filter }: SearchBarProps) => {
   return (
     <HStack w="full" maxW="600px">
       <Input
         placeholder="boku no hero"
         value={filter}
-        onChange={(e) => setFilter(e.target.value)}
+        onChange={(e) => setFilter(e.target.value.toLowerCase())}
       />
     </HStack>
   );
@@ -49,11 +38,10 @@ const HomePage: NextPage = () => {
 
   const [modal, setModal] = useState<{
     isOpen: boolean;
-    commic: Commic | null;
+    commic: Comic | null;
   }>({ commic: null, isOpen: false });
 
-  const handleOpenModal = (commic: Commic) =>
-    setModal({ isOpen: true, commic });
+  const handleOpenModal = (commic: Comic) => setModal({ isOpen: true, commic });
 
   const commics = filter
     ? data?.filter((item) => item?.name.toLocaleLowerCase().includes(filter))
@@ -97,6 +85,16 @@ const HomePage: NextPage = () => {
       </Layout>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  await queryClient.fetchQuery(getCommicsKey, getCommics);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 };
 
 export default HomePage;

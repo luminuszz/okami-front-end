@@ -1,6 +1,6 @@
+import { Comic } from "@/domain/entities/commic";
 import api from "@/services/api";
 import { useQuery } from "react-query";
-import { Commic } from "@/domain/entities/commic";
 
 export type UseGetCommicByIdInput = {
   id: string;
@@ -9,7 +9,7 @@ export type UseGetCommicByIdInput = {
 const getCommicByIdKey = (id: string) => `/commics/${id}`;
 
 const getCommicById = async ({ id }: UseGetCommicByIdInput) => {
-  const { data } = await api.get<Commic>(getCommicByIdKey(id));
+  const { data } = await api.get<Comic>(getCommicByIdKey(id));
 
   return data;
 };

@@ -1,11 +1,11 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
-import { Commic } from "@/domain/entities/commic";
+import { Comic } from "@/domain/entities/commic";
+import useMarkCommicRead from "@/services/api/mutations/useMarkCommicRead";
+import { getCommicsKey } from "@/services/api/queries/useGetCommics";
 import {
   Button,
   FormControl,
   FormHelperText,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,16 +20,13 @@ import {
   NumberInputStepper,
   useToast,
 } from "@chakra-ui/react";
-import useMarkCommicRead, {
-  MarkCommicReadInput,
-} from "@/services/api/mutations/useMarkCommicRead";
 import { filter } from "lodash";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
-import { getCommicsKey } from "@/services/api/queries/useGetCommics";
 import { z } from "zod";
 
 type Props = {
-  commic: Commic;
+  commic: Comic;
   isOpen: boolean;
   onClose: () => void;
 };
@@ -49,8 +46,8 @@ const UpdateCommicModal = ({ commic, onClose, isOpen }: Props) => {
 
   const markCommicAsReadMutation = useMarkCommicRead({
     onMutate() {
-      client.setQueryData(getCommicsKey, (oldData) =>
-        filter(oldData as Commic[], (item) => item.id !== commic.id)
+      client.setQueryData<Comic[]>(getCommicsKey, (oldData) =>
+        filter(oldData, (item) => item.id !== commic.id)
       );
     },
   });

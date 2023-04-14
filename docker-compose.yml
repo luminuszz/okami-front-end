@@ -1,9 +1,12 @@
 version: "3.7"
 services:
   react_app:
+    network_mode: "host"
     environment:
       - PORT=${PORT}
       - DOCKER_FILE_ENV=${DOCKER_FILE_ENV}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - API_URL=${API_URL}
     container_name: luminuszz-wep-app
     restart: always
     build:
@@ -14,6 +17,7 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
+
 
 
 

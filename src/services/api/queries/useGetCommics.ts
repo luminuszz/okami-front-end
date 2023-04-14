@@ -1,11 +1,11 @@
+import { Comic } from "@/domain/entities/commic";
 import api from "@/services/api";
-import { Commic } from "@/domain/entities/commic";
 import { useQuery } from "react-query";
 
 const getCommicsKey = "/commics/find-all-unread";
 
 const getCommics = async () => {
-  const { data } = await api.get<Commic[]>(getCommicsKey);
+  const { data } = await api.get<Comic[]>(getCommicsKey);
 
   return data;
 };

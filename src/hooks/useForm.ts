@@ -32,7 +32,7 @@ export default function useForm<
     <Key extends keyof InitialValues>(key: Key, value: InitialValues[Key]) => {
       setForm((prev) => ({ ...prev, [key]: value }));
     },
-    [initialValues]
+    []
   );
 
   const onSubmit = useCallback(() => {

@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { FC, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (

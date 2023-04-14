@@ -1,37 +1,47 @@
-import { NextPage } from "next";
 import Layout from "@/components/layout";
-import {
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Image,
-  SimpleGrid,
-  VStack,
-  Text,
-  Spinner,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  ModalCloseButton,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
-import { FC, useState } from "react";
-import { Order } from "@/domain/entities/order";
-import { useGetOrders } from "@/services/api/queries/useGetOrders";
 import Skeleton from "@/components/Skeleton";
+import { Order } from "@/domain/entities/order";
 import useForm from "@/hooks/useForm";
-import { boolean, z } from "zod";
 import {
   CreateOrder,
   useCreateOrder,
 } from "@/services/api/mutations/useCreateOrder";
+import {
+  getOrders,
+  getOrdersKey,
+  useGetOrders,
+} from "@/services/api/queries/useGetOrders";
+import {
+  Badge,
+  Button,
+  Center,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  SimpleGrid,
+  Spinner,
+  Text,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
+import { sortBy } from "lodash";
+import { GetServerSideProps, NextPage } from "next";
+import { FC, useState } from "react";
+import { dehydrate } from "react-query";
+import { z } from "zod";
+
+import { queryClient } from "../_app";
 
 const OrderCard: FC<{ order: Order }> = ({ order }) => {
   return (
@@ -61,6 +71,15 @@ const OrderCard: FC<{ order: Order }> = ({ order }) => {
       <Text fontWeight="bold" color="white" as="p" textAlign="center">
         {order.date}
       </Text>
+
+      <Center>
+        <Badge
+          colorScheme={order.isDelivered ? "green" : "yellow"}
+          variant="solid"
+        >
+          {order.isDelivered ? "Entregue" : "Em transito"}
+        </Badge>
+      </Center>
     </VStack>
   );
 };
@@ -140,10 +159,64 @@ const CreateOrderModal: FC<OrderModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
+type ViewOrderProps = {
+  order: Order;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const ViewOrderModal: FC<ViewOrderProps> = ({ isOpen, onClose, order }) => {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{order.name}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <VStack spacing="4">
+            <FormControl>
+              <FormLabel>Nome</FormLabel>
+              <Input
+                type="text"
+                placeholder="Nome"
+                disabled
+                value={order.name}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Código de rastreio</FormLabel>
+              <Input
+                type="text"
+                placeholder="codigo de rastreio"
+                disabled
+                value={order.traking_code}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Ultimo registro de rastreio</FormLabel>
+              <Textarea isDisabled disabled />
+            </FormControl>
+          </VStack>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button variant="ghost" colorScheme="blue" mr={3} onClick={onClose}>
+            Voltar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
 const Orders: NextPage = () => {
   const { data, isLoading, isRefetching } = useGetOrders();
 
   const [modal, setModal] = useState(false);
+
+  const sortedOrdersByPending = sortBy(data, { isDelivered: true });
 
   return (
     <Layout>
@@ -153,7 +226,7 @@ const Orders: NextPage = () => {
         <Heading>Encomendas {isRefetching && <Spinner size="md" />}</Heading>
         <Flex alignItems="center" justifyContent="flex-end">
           <Button colorScheme="yellow" onClick={() => setModal(true)}>
-            Adcionar encomenda
+            Adicionar encomenda
           </Button>
         </Flex>
 
@@ -162,13 +235,25 @@ const Orders: NextPage = () => {
             {isLoading ? (
               <Skeleton quantity={10} />
             ) : (
-              data?.map((order) => <OrderCard key={order.id} order={order} />)
+              sortedOrdersByPending.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))
             )}
           </SimpleGrid>
         </Flex>
       </Container>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  await queryClient.fetchQuery(getOrdersKey, getOrders);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 };
 
 export default Orders;

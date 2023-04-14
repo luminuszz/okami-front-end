@@ -1,13 +1,13 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
 import theme from "@/theme";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Roboto } from "@next/font/google";
+import type { AppProps } from "next/app";
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 // Query client
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 // Setting up Roboto font
 const roboto = Roboto({
@@ -25,7 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
           style={{ width: "100%", height: "100%" }}
           className={roboto.className}
         >
-          <Component {...pageProps} />
+          <Hydrate state={pageProps?.dehydratedState}>
+            <Component {...pageProps} />
+          </Hydrate>
         </main>
         <ReactQueryDevtools />
       </QueryClientProvider>
