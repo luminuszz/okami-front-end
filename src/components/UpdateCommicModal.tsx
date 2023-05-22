@@ -40,7 +40,7 @@ const UpdateCommicModal = ({ commic, onClose, isOpen }: Props) => {
 
   useEffect(() => {
     if (commic) {
-      setInput(String(commic.cap));
+      setInput(String(commic.chapter));
     }
   }, [commic]);
 
