@@ -2,7 +2,7 @@ import { Comic } from "@/domain/entities/commic";
 import api from "@/services/api";
 import { useQuery } from "react-query";
 
-const getCommicsKey = "/commics/find-all-unread";
+const getCommicsKey = "/work/fetch-for-workers-unread";
 
 const getCommics = async () => {
   const { data } = await api.get<Comic[]>(getCommicsKey);
@@ -12,7 +12,7 @@ const getCommics = async () => {
 
 const useGetCommics = () =>
   useQuery(getCommicsKey, getCommics, {
-    onSuccess: (data) => data.sort((a, b) => (a.hasNewchapter ? -1 : 1)),
+    onSuccess: (data) => data.sort((a, b) => (a.hasNewChapter ? -1 : 1)),
   });
 
 export { getCommics, getCommicsKey };

@@ -1,4 +1,4 @@
-import CommiCard from "@/components/CommiCard";
+import CommicCard from "@/components/CommiCard";
 import Layout from "@/components/layout";
 import Skeleton from "@/components/Skeleton";
 import UpdateCommicModal from "@/components/UpdateCommicModal";
@@ -23,7 +23,7 @@ const SearchBar = ({ setFilter, filter }: SearchBarProps) => {
   return (
     <HStack w="full" maxW="600px">
       <Input
-        placeholder="boku no hero"
+        placeholder="Digite ..."
         value={filter}
         onChange={(e) => setFilter(e.target.value.toLowerCase())}
       />
@@ -66,13 +66,13 @@ const HomePage: NextPage = () => {
             />
           </Flex>
 
-          <SimpleGrid columns={4} spacing="40px" mt="5">
+          <SimpleGrid columns={[2, 3, 4]} spacing="40px" mt="5">
             {isLoading ? (
               <Skeleton quantity={30} />
             ) : (
               <>
                 {commics?.map((item) => (
-                  <CommiCard
+                  <CommicCard
                     key={item.id}
                     commic={item}
                     onClickMarkReadButton={() => handleOpenModal(item)}

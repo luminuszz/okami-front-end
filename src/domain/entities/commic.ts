@@ -1,11 +1,7 @@
 export interface Comic {
-  tatus: string;
-  url: string;
-  createdAt: Date;
-  cap: number;
-  category: string;
-  name: string;
-  recipientId: string;
-  hasNewchapter: boolean;
+  hasNewChapter: boolean;
   id: string;
+  name: string;
+  url: string;
+  chapter: number;
 }

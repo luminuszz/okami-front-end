@@ -8,7 +8,7 @@ type Props = {
   onClickMarkReadButton: () => void;
 };
 
-const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
+const CommicCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
   const router = useRouter();
 
   return (
@@ -27,7 +27,7 @@ const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
         noOfLines={1}
         textAlign="center"
         fontFamily="body"
-        fontSize="lg"
+        fontSize={["md", "lg"]}
         color="green.200"
       >
         {commic.name}
@@ -37,21 +37,22 @@ const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
         noOfLines={1}
         textAlign="center"
         fontFamily="body"
-        fontSize="lg"
+        fontSize={["md", "lg"]}
         color="green.300"
       >
-        {`Ultimo capitulo lido: ${commic.cap}`}
+        {`Ultimo capitulo lido: ${commic.chapter}`}
       </Text>
 
-      {commic.hasNewchapter && (
+      {commic.hasNewChapter && (
         <>
           <Button
-            isDisabled={!commic.hasNewchapter}
+            isDisabled={!commic.hasNewChapter}
             colorScheme="yellow"
             variant="link"
             as="a"
             href={commic.url}
             target="_blank"
+            fontSize={["sm", "md", "lg"]}
           >
             Capitulo novo disponível !
           </Button>
@@ -60,6 +61,7 @@ const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
             colorScheme="teal"
             variant="solid"
             onClick={onClickMarkReadButton}
+            fontSize={["sm", "md", "lg"]}
           >
             marcar como lido
           </Button>
@@ -69,4 +71,4 @@ const CommiCard: FC<Props> = ({ commic, onClickMarkReadButton }) => {
   );
 };
 
-export default CommiCard;
+export default CommicCard;
