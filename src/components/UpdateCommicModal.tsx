@@ -50,6 +50,26 @@ const UpdateCommicModal = ({ commic, onClose, isOpen }: Props) => {
         filter(oldData, (item) => item.id !== commic.id)
       );
     },
+    onSuccess() {
+      client.invalidateQueries(getCommicsKey);
+      toast({
+        title: "Capitulo marcado como lido",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    },
+    onError() {
+      toast({
+        title: "Erro ao marcar capitulo como lido",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    },
+    onSettled() {
+      setInput("");
+    },
   });
 
   const handleSubmit = () => {
@@ -60,31 +80,7 @@ const UpdateCommicModal = ({ commic, onClose, isOpen }: Props) => {
       chapter,
     };
 
-    markCommicAsReadMutation.mutate(payload, {
-      onSuccess() {
-        toast({
-          title: "Capitulo marcado como lido",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-
-        client.invalidateQueries(getCommicsKey);
-      },
-
-      onError() {
-        toast({
-          title: "Erro ao marcar capitulo como lido",
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
-      },
-
-      onSettled() {
-        setInput("");
-      },
-    });
+    markCommicAsReadMutation.mutate(payload);
 
     onClose();
   };

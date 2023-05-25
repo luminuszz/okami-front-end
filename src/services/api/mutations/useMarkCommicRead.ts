@@ -6,12 +6,11 @@ export type MarkCommicReadInput = {
   id: string;
 };
 
-export const markCommicReadKey = (id: string) => `/commics/${id}/update`;
+export const markCommicReadKey = (id: string) => `/work/${id}/update-chapater`;
 
 export const markCommicRead = async ({ chapter, id }: MarkCommicReadInput) => {
   const payload = {
     chapter,
-    id,
   };
 
   await api.patch(markCommicReadKey(id), payload);
