@@ -10,9 +10,11 @@ import useGetCommics, {
 
 import { Container, Flex, HStack, Input, SimpleGrid } from "@chakra-ui/react";
 import { GetServerSideProps, NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { dehydrate } from "react-query";
 import { queryClient } from "../_app";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 type SearchBarProps = {
   isRefetching: boolean;
   filter: string;
@@ -33,6 +35,14 @@ const SearchBar = ({ setFilter, filter }: SearchBarProps) => {
 
 const HomePage: NextPage = () => {
   const { data, isLoading, isRefetching } = useGetCommics();
+  const router = useRouter();
+
+  const { status } = useSession({
+    required: true,
+    async onUnauthenticated() {
+      await router.replace("/login");
+    },
+  });
 
   const [filter, setFilter] = useState("");
 
@@ -46,6 +56,8 @@ const HomePage: NextPage = () => {
   const commics = filter
     ? data?.filter((item) => item?.name.toLocaleLowerCase().includes(filter))
     : data;
+
+  const isLogging = status === "loading";
 
   return (
     <>
@@ -67,7 +79,7 @@ const HomePage: NextPage = () => {
           </Flex>
 
           <SimpleGrid columns={[2, 3, 4]} spacing="40px" mt="5">
-            {isLoading ? (
+            {isLoading || isLogging ? (
               <Skeleton quantity={30} />
             ) : (
               <>
