@@ -13,8 +13,9 @@ import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 import { dehydrate } from "react-query";
 import { queryClient } from "../_app";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import process from "process";
 type SearchBarProps = {
   isRefetching: boolean;
   filter: string;
@@ -99,7 +100,18 @@ const HomePage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session || session?.user?.email !== process.env.AUTH_USER_EMAIL) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: "/login",
+      },
+    };
+  }
+
   await queryClient.fetchQuery(getCommicsKey, getCommics);
 
   return {
