@@ -1,9 +1,10 @@
 import Layout from "@/components/layout";
 import { GetServerSideProps, NextPage } from "next";
-import { Button, Container, Flex } from "@chakra-ui/react";
+import { Button, Container, Flex, Heading } from "@chakra-ui/react";
 import { FC } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { getSession } from "next-auth/react";
+import * as process from "process";
 
 const LoginButton: FC = () => {
   const handleLogin = async () => signIn();
@@ -24,11 +25,13 @@ const LoginButton: FC = () => {
 const LoginPage: NextPage = () => {
   const { status } = useSession();
 
+  const isLogged = status === "authenticated";
+
   return (
     <Layout>
       <Container height="full" maxW="container.xl" py="10">
         <Flex flex="1" justifyContent="center" alignItems="center">
-          <LoginButton />
+          {isLogged ? <Heading>Não Atorizado</Heading> : <LoginButton />}
         </Flex>
       </Container>
     </Layout>
@@ -38,7 +41,7 @@ const LoginPage: NextPage = () => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
-  if (session) {
+  if (session && session?.user?.email === process.env.AUTH_USER_EMAIL) {
     return {
       redirect: {
         permanent: true,
