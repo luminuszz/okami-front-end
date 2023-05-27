@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import theme from "@/theme";
 import { ChakraProvider } from "@chakra-ui/react";
 import { Roboto } from "@next/font/google";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -20,17 +21,19 @@ const roboto = Roboto({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider resetCSS theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <main
-          style={{ width: "100%", height: "100%" }}
-          className={roboto.className}
-        >
-          <Hydrate state={pageProps?.dehydratedState}>
-            <Component {...pageProps} />
-          </Hydrate>
-        </main>
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+      <SessionProvider session={pageProps.session}>
+        <QueryClientProvider client={queryClient}>
+          <main
+            style={{ width: "100%", height: "100%" }}
+            className={roboto.className}
+          >
+            <Hydrate state={pageProps?.dehydratedState}>
+              <Component {...pageProps} />
+            </Hydrate>
+          </main>
+          <ReactQueryDevtools />
+        </QueryClientProvider>
+      </SessionProvider>
     </ChakraProvider>
   );
 }
