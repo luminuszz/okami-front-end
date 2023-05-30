@@ -5,17 +5,18 @@ import UpdateCommicModal from "@/components/UpdateCommicModal";
 import { Comic } from "@/domain/entities/commic";
 import useGetCommics, {
   getCommics,
-  getCommicsKey,
+  getCommicsKey
 } from "@/services/api/queries/useGetCommics";
 
+import { whithAuthortizantion } from "@/utils/withAuthortizantion";
 import { Container, Flex, HStack, Input, SimpleGrid } from "@chakra-ui/react";
-import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
+import { NextPage } from "next";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { dehydrate } from "react-query";
 import { queryClient } from "../_app";
-import { getSession, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import process from "process";
+
 type SearchBarProps = {
   isRefetching: boolean;
   filter: string;
@@ -100,18 +101,7 @@ const HomePage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (!session || session?.user?.email !== process.env.AUTH_USER_EMAIL) {
-    return {
-      redirect: {
-        permanent: true,
-        destination: "/login",
-      },
-    };
-  }
-
+export const getServerSideProps = whithAuthortizantion(async (ctx) => {
   await queryClient.fetchQuery(getCommicsKey, getCommics);
 
   return {
@@ -119,6 +109,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       dehydratedState: dehydrate(queryClient),
     },
   };
-};
+});
 
 export default HomePage;
